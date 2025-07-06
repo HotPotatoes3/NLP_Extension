@@ -79,14 +79,10 @@ We welcome contributions! Here's how to get started:
 - Add dark mode for the popup UI
 - Persist checkbox filter state using `chrome.storage`
 - Include scoring based on content keywords or site metadata
+- Add NLP capabilities (in progress)
 
 ---
 
-## 🖼 Screenshots (optional)
-
-You can add screenshots of the popup and highlighted search results here if you'd like to showcase how it looks.
-
----
 
 ## 📄 License
 
