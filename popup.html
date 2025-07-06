@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Link Highlighter</title>
+  <script src="popup.js" defer></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 10px;
+      width: 250px;
+    }
+    .legend {
+      margin-bottom: 12px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    .color-box {
+      width: 16px;
+      height: 16px;
+      margin-right: 8px;
+      border-radius: 3px;
+    }
+    .checkboxes {
+      margin-bottom: 10px;
+    }
+    .checkboxes label {
+      display: block;
+      margin: 3px 0;
+    }
+    button {
+      margin-top: 8px;
+      padding: 5px 10px;
+      border-radius: 6px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h3>Link Highlighter</h3>
+
+  <div class="legend">
+    <strong>Color Key:</strong>
+    <div class="legend-item"><div class="color-box" style="background:#ffeeba"></div>.com &rarr; score 3</div>
+    <div class="legend-item"><div class="color-box" style="background:#d4edda"></div>.org &rarr; score 2</div>
+    <div class="legend-item"><div class="color-box" style="background:#cce5ff"></div>.edu/.gov &rarr; score 1</div>
+    <div class="legend-item"><div class="color-box" style="background:#f8d7da"></div>Other &rarr; score 0</div>
+  </div>
+
+  <div class="checkboxes">
+    <strong>Filter scores:</strong>
+    <label><input type="checkbox" value="3" checked> Score 3 (.com)</label>
+    <label><input type="checkbox" value="2" checked> Score 2 (.org)</label>
+    <label><input type="checkbox" value="1" checked> Score 1 (.edu/.gov)</label>
+    <label><input type="checkbox" value="0" checked> Score 0 (other)</label>
+  </div>
+
+  <button id="applyFilter">Apply Filter</button>
+</body>
+</html>
