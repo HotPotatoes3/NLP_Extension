@@ -1,28 +1,41 @@
 const processedLinks = new Set();
+const linkData = [];
 
-const scoreLink = (url) => {
-  if (url.includes('.gov') || url.includes('.edu')) return 1;
-  if (url.includes('.org')) return 2;
-  if (url.includes('.com')) return 3;
+// Score logic based on hostname
+function getScore(hostname) {
+  if (hostname.endsWith(".gov") || hostname.endsWith(".edu")) return 1;
+  if (hostname.endsWith(".org")) return 2;
+  if (hostname.endsWith(".com")) return 3;
   return 0;
-};
+}
 
-const highlightColor = (score) => {
-  switch (score) {
-    case 1: return '#a2d5c6'; // greenish
-    case 2: return '#ffeaa7'; // yellow
-    case 3: return '#fab1a0'; // pink
-    default: return '';
-  }
-};
+// Highlight color
+function getColor(score) {
+  if (score >= 3) return "#ffeeba";     // light yellow (low credibility)
+  if (score === 2) return "#d4edda";    // light green
+  if (score === 1) return "#cce5ff";    // light blue (high credibility)
+  return "#f8d7da";                     // light red (unscored)
+}
 
-// 🧠 Your filtering logic for valid Google search links
-const getValidLinks = () => {
+function highlightLink(linkEl, score) {
+  linkEl.style.backgroundColor = getColor(score);
+  linkEl.style.borderRadius = "6px";
+  linkEl.style.padding = "2px 4px";
+  linkEl.style.transition = "background-color 0.3s";
+}
+
+function removeHighlight(linkEl) {
+  linkEl.style.backgroundColor = "transparent";
+}
+
+// Main logic
+function getValidLinks() {
   return Array.from(document.querySelectorAll('a')).filter(a => {
     const href = a.href;
     if (!href || href.includes("google.com") || href.startsWith("javascript:")) return false;
     const rect = a.getBoundingClientRect();
     if (rect.height === 0 || rect.width === 0) return false;
+
     let parent = a;
     while (parent) {
       if (
@@ -35,21 +48,28 @@ const getValidLinks = () => {
     }
     return false;
   });
-};
+}
 
 function highlightAndAttachHover() {
   const links = getValidLinks();
+
   for (const link of links) {
     if (processedLinks.has(link)) continue;
     processedLinks.add(link);
 
-    const score = scoreLink(link.href);
-    if (score === 0) continue;
+    let hostname;
+    try {
+      const url = new URL(link.href);
+      hostname = url.hostname;
+    } catch {
+      continue;
+    }
 
-    // Highlight
-    link.style.backgroundColor = highlightColor(score);
+    const score = getScore(hostname);
+    highlightLink(link, score);
+    linkData.push({ href: link.href, domain: hostname, score, element: link });
 
-    // Tooltip hover
+    // Attach tooltip
     link.addEventListener("mouseenter", async () => {
       const tooltip = document.createElement("div");
       tooltip.textContent = "Loading credibility...";
@@ -82,25 +102,39 @@ function highlightAndAttachHover() {
       let removeTimeout;
 
       const handleMouseLeave = () => {
-        removeTimeout = setTimeout(() => {
-          tooltip.remove();
-        }, 200); // small delay
+        removeTimeout = setTimeout(() => tooltip.remove(), 200);
       };
 
-      const handleMouseEnterTooltip = () => clearTimeout(removeTimeout);
-
-      tooltip.addEventListener("mouseenter", handleMouseEnterTooltip);
+      tooltip.addEventListener("mouseenter", () => clearTimeout(removeTimeout));
       tooltip.addEventListener("mouseleave", () => tooltip.remove());
-
       link.addEventListener("mouseleave", handleMouseLeave);
-
     });
   }
 }
 
-// Run once on page load
+// Initial run
 highlightAndAttachHover();
 
-// Watch for dynamically loaded results (scroll/AJAX)
+// Observe dynamic changes
 const observer = new MutationObserver(highlightAndAttachHover);
 observer.observe(document.body, { childList: true, subtree: true });
+
+// Respond to popup requests (optional, from original)
+chrome?.runtime?.onMessage?.addListener((request, sender, sendResponse) => {
+  if (request.action === "getScoredLinks") {
+    sendResponse({
+      links: linkData.map(({ href, domain, score }) => ({ href, domain, score }))
+    });
+  }
+
+  if (request.action === "filterLinksByScore") {
+    const allowed = request.allowedScores;
+    linkData.forEach(({ score, element }) => {
+      if (allowed.includes(score)) {
+        highlightLink(element, score);
+      } else {
+        removeHighlight(element);
+      }
+    });
+  }
+});
