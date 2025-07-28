@@ -49,21 +49,52 @@ function highlightAndAttachHover() {
     // Highlight
     link.style.backgroundColor = highlightColor(score);
 
-    let removeTimeout;
+    // Tooltip hover
+    link.addEventListener("mouseenter", async () => {
+      const tooltip = document.createElement("div");
+      tooltip.textContent = "Loading credibility...";
+      Object.assign(tooltip.style, {
+        position: "absolute",
+        top: (link.getBoundingClientRect().top + window.scrollY - 60) + "px",
+        left: (link.getBoundingClientRect().left + window.scrollX) + "px",
+        backgroundColor: "white",
+        padding: "6px",
+        border: "1px solid #ccc",
+        borderRadius: "4px",
+        fontSize: "12px",
+        zIndex: 9999,
+        maxWidth: "300px"
+      });
+      document.body.appendChild(tooltip);
 
-    const handleMouseLeave = () => {
-      removeTimeout = setTimeout(() => {
-        tooltip.remove();
-      }, 200); // small delay
-    };
+      try {
+        const response = await fetch("http://localhost:3000/gemini", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url: link.href }),
+        });
+        const data = await response.json();
+        tooltip.textContent = data.summary || "No response";
+      } catch (err) {
+        tooltip.textContent = "Error fetching credibility info.";
+      }
 
-    const handleMouseEnterTooltip = () => clearTimeout(removeTimeout);
+      let removeTimeout;
 
-    tooltip.addEventListener("mouseenter", handleMouseEnterTooltip);
-    tooltip.addEventListener("mouseleave", () => tooltip.remove());
+      const handleMouseLeave = () => {
+        removeTimeout = setTimeout(() => {
+          tooltip.remove();
+        }, 200); // small delay
+      };
 
-    link.addEventListener("mouseleave", handleMouseLeave);
+      const handleMouseEnterTooltip = () => clearTimeout(removeTimeout);
 
+      tooltip.addEventListener("mouseenter", handleMouseEnterTooltip);
+      tooltip.addEventListener("mouseleave", () => tooltip.remove());
+
+      link.addEventListener("mouseleave", handleMouseLeave);
+
+    });
   }
 }
 
