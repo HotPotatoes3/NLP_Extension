@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Link Trust Checker",
+  "name": "Google Search Research Helper",
   "version": "1.0",
   "permissions": ["scripting", "activeTab"],
   "action": {

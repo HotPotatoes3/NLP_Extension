@@ -70,43 +70,57 @@ function highlightAndAttachHover() {
 
     // Attach tooltip
     link.addEventListener("mouseenter", async () => {
-      const tooltip = document.createElement("div");
-      tooltip.textContent = "Loading credibility...";
-      Object.assign(tooltip.style, {
-        position: "absolute",
-        top: (link.getBoundingClientRect().top + window.scrollY - 60) + "px",
-        left: (link.getBoundingClientRect().left + window.scrollX) + "px",
-        backgroundColor: "white",
-        padding: "6px",
-        border: "1px solid #ccc",
-        borderRadius: "4px",
-        fontSize: "12px",
-        zIndex: 9999,
-        maxWidth: "300px"
+    const tooltip = document.createElement("div");
+
+    // Add heading
+    const heading = document.createElement("div");
+    heading.textContent = "Credibility Overview";
+    heading.style.fontWeight = "bold";
+    heading.style.marginBottom = "4px";
+
+    // Add placeholder for summary
+    const summaryText = document.createElement("div");
+    summaryText.textContent = "Loading credibility...";
+
+    // Tooltip container
+    Object.assign(tooltip.style, {
+      position: "absolute",
+      top: (link.getBoundingClientRect().top + window.scrollY - 60) + "px",
+      left: (link.getBoundingClientRect().left + window.scrollX) + "px",
+      backgroundColor: "white",
+      padding: "6px",
+      border: "1px solid #ccc",
+      borderRadius: "4px",
+      fontSize: "12px",
+      zIndex: 9999,
+      maxWidth: "300px"
+    });
+
+    tooltip.appendChild(heading);
+    tooltip.appendChild(summaryText);
+    document.body.appendChild(tooltip);
+
+    try {
+      const response = await fetch("http://localhost:3000/gemini", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: link.href }),
       });
-      document.body.appendChild(tooltip);
+      const data = await response.json();
+      summaryText.textContent = data.summary || "No response";
+    } catch (err) {
+      summaryText.textContent = "Error fetching credibility info.";
+    }
 
-      try {
-        const response = await fetch("http://localhost:3000/gemini", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ url: link.href }),
-        });
-        const data = await response.json();
-        tooltip.textContent = data.summary || "No response";
-      } catch (err) {
-        tooltip.textContent = "Error fetching credibility info.";
-      }
+    let removeTimeout;
 
-      let removeTimeout;
+    const handleMouseLeave = () => {
+      removeTimeout = setTimeout(() => tooltip.remove(), 200);
+    };
 
-      const handleMouseLeave = () => {
-        removeTimeout = setTimeout(() => tooltip.remove(), 200);
-      };
-
-      tooltip.addEventListener("mouseenter", () => clearTimeout(removeTimeout));
-      tooltip.addEventListener("mouseleave", () => tooltip.remove());
-      link.addEventListener("mouseleave", handleMouseLeave);
+    tooltip.addEventListener("mouseenter", () => clearTimeout(removeTimeout));
+    tooltip.addEventListener("mouseleave", () => tooltip.remove());
+    link.addEventListener("mouseleave", handleMouseLeave);
     });
   }
 }

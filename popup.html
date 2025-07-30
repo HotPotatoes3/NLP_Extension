@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Link Highlighter</title>
+  <title>Credibility Overview Highlighter</title>
   <script src="popup.js" defer></script>
   <style>
     body {
@@ -42,7 +42,7 @@
   </style>
 </head>
 <body>
-  <h3>Link Highlighter</h3>
+  <h3>Credibility Overview Highlighter</h3>
 
   <div class="legend">
     <strong>Color Key:</strong>
@@ -54,10 +54,12 @@
 
   <div class="checkboxes">
     <strong>Filter scores:</strong>
-    <label><input type="checkbox" value="3" checked> Score 3 (.edu/.gov typically high credibility)</label>
-    <label><input type="checkbox" value="2" checked> Score 2 (.org typically medium credibility)</label>
-    <label><input type="checkbox" value="1" checked> Score 1 (.com typically low credibility)</label>
-    <label><input type="checkbox" value="0" checked> Score 0 (other typically lowest credibility)</label>
+    <label><input type="checkbox" value="3" checked> Score 3 (.edu/.gov &rarr; typically high credibility)</label>
+    <label><input type="checkbox" value="2" checked> Score 2 (.org &rarr; typically medium credibility)</label>
+    <label><input type="checkbox" value="1" checked> Score 1 (.com &rarr; typically low credibility)</label>
+    
+    
+    <label><input type="checkbox" value="0" checked> Score 0 (other &rarr; typically lowest credibility)</label>
   </div>
 
   <button id="applyFilter">Apply Filter</button>
