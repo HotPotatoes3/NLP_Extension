@@ -24,7 +24,7 @@ This project consists of a Chrome Extension frontend and a Node.js backend worki
 ### 🖥️ Backend: Node.js Server
 
 - Accepts URLs and returns a credibility score and AI-generated summary.
-- Uses caching and NLP to reduce latency and cost.
+- Uses caching to reduce latency and cost.
 - See `README-backend.md` for deployment instructions.
 
 ---
