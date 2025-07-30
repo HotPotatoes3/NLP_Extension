@@ -1,89 +1,59 @@
-# 🔍 Google Search Link Scorer Chrome Extension
+# 🧠 Google Search Research Helper – Full System Overview
 
-This Chrome extension highlights links on Google Search result pages based on their domain type (e.g., `.com`, `.org`, `.edu`). It also displays a popup interface that lets users filter which links are highlighted by score using simple checkboxes.
-
----
-
-## 🚀 Installation & Usage
-
-1. **Clone or download this repository:**
-
-```bash
-git clone https://github.com/HotPotatoes3/NLP_Extension
-```
-
-2. **Open Chrome and navigate to:**
-
-```
-chrome://extensions
-```
-
-3. **Enable "Developer mode"** (toggle at the top right).
-
-4. Click **"Load unpacked"** and select the folder where you cloned or downloaded the extension.
-
-5. Navigate to a Google Search results page, such as:
-
-```
-https://www.google.com/search?q=test
-```
-
-6. Click the extension icon (puzzle piece in the Chrome toolbar) and select the **"Link Highlighter"** extension.
-
-7. In the popup:
-   - View the **color key** showing what each domain score means.
-   - Use the **checkboxes** to filter which types of domains get highlighted.
-
-> 💡 Note: Only **organic search result links** are highlighted. Tabs, embedded content, and ads are ignored.
+This project consists of a Chrome Extension frontend and a Node.js backend working together to evaluate the trustworthiness of links shown in Google Search results.
 
 ---
 
-## 🎯 Scoring Logic
+## 🔍 Features
 
-Links are scored based on their domain suffix:
-
-| Domain Type     | Score | Highlight Color |
-|------------------|--------|-------------------|
-| `.com`           | 3      | Yellow-ish         |
-| `.org`           | 2      | Green-ish          |
-| `.edu`, `.gov`   | 1      | Blue-ish           |
-| Others           | 0      | Red-ish            |
-
-These scores are used both for highlighting links on the page and for filtering them in the popup.
+- Highlights search result links based on the top-level Domains of the url (.com, .gov, etc.).
+- Hovering over a link displays a credibility popup with a short summary.
+- Built-in popup UI lets users filter highlights.
 
 ---
 
-## 🤝 Contributing
+## 🔗 Components
 
-We welcome contributions! Here's how to get started:
+### 🧩 Frontend: Chrome Extension
 
-### 🔧 Steps
+- Injects content scripts into Google Search pages.
+- Scores and colors links.
+- Fetches AI trust summaries on hover.
+- See `README-frontend.md` for setup instructions.
 
-1. **Fork** this repository on GitHub.
-2. Create a new branch:
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
-3. Make your changes locally.
-4. Commit and push your work:
-   ```bash
-   git commit -m "Add your feature"
-   git push origin feature/your-feature-name
-   ```
-5. Open a **Pull Request** describing your changes.
+### 🖥️ Backend: Node.js Server
 
-### 💡 Ideas for Contributions
-
-- Add support for more domain-based scoring (e.g., `.net`, `.io`)
-- Show the number of links highlighted per score
-- Add dark mode for the popup UI
-- Persist checkbox filter state using `chrome.storage`
-- Include scoring based on content keywords or site metadata
-- Add NLP capabilities (in progress)
+- Accepts URLs and returns a credibility score and AI-generated summary.
+- Uses caching and NLP to reduce latency and cost.
+- See `README-backend.md` for deployment instructions.
 
 ---
 
+## 🧪 Example Flow
 
-## 📄 License
+1. User visits Google Search.
+2. Extension highlights links (e.g., red = likely untrustworthy, green = likely reliable).
+3. User hovers over a link.
+4. The extension requests a trust summary from the backend.
+5. A popup shows the credibility score and explanation.
 
-This project is open source and available under the [MIT License](LICENSE).
+---
+
+## ⚙️ Deployment Notes
+
+- Make sure the backend is deployed and accessible (localhost or hosted).
+- Update any hardcoded URLs in the extension's JavaScript to match your deployment target (e.g., `http://yourdomain.com:3000`).
+
+---
+
+## 🛡️ Security & Limitations
+
+- CORS is configured for extension–server communication.
+- No personal data is stored.
+- Backend performance depends on your NLP model and hosting provider.
+
+---
+
+## 👨‍💻 Authors
+
+Developed by [Shridath Kanuparthy](https://github.com/HotPotatoes3)
