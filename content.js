@@ -3,18 +3,17 @@ const linkData = [];
 
 // Score logic based on hostname
 function getScore(hostname) {
-  if (hostname.endsWith(".gov") || hostname.endsWith(".edu")) return 1;
+  if (hostname.endsWith(".gov") || hostname.endsWith(".edu")) return 3;
   if (hostname.endsWith(".org")) return 2;
-  if (hostname.endsWith(".com")) return 3;
+  if (hostname.endsWith(".com")) return 1;
   return 0;
 }
 
-// Highlight color
 function getColor(score) {
-  if (score >= 3) return "#ffeeba";     // light yellow (low credibility)
-  if (score === 2) return "#d4edda";    // light green
-  if (score === 1) return "#cce5ff";    // light blue (high credibility)
-  return "#f8d7da";                     // light red (unscored)
+  if (score === 3) return "#cce5ff";    // .edu/.gov
+  if (score === 2) return "#d4edda";    // .org
+  if (score === 1) return "#ffeeba";    // .com
+  return "#f8d7da";                     // unknown
 }
 
 function highlightLink(linkEl, score) {
