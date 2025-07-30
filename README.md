@@ -6,7 +6,7 @@ This project consists of a Chrome Extension frontend and a Node.js backend worki
 
 ## 🔍 Features
 
-- Highlights search result links based on the top-level Domains of the url (.com, .gov, etc.).
+- Highlights search result links based on the top-level domains of the url (.com, .gov, etc.).
 - Hovering over a link displays a credibility popup with a short summary.
 - Built-in popup UI lets users filter highlights.
 
